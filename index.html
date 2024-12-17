@@ -81,11 +81,6 @@
                 <a onclick="clientarea()" class="bringer-button">Client Area</a>
             </div>
         </div>
-        <script>
-            function clientarea() {
-                alert('Under maintenance!')
-            }
-        </script>
         <!-- Mobile Header -->
         <div class="bringer-mobile-header-inner">
             <a href="./" class="bringer-logo">
@@ -502,8 +497,8 @@
                                 <div class="bringer-menu-widget">
                                     <ul>
                                         <li><a href="/aboutcompany/">About Us</a></li>
-                                        <li><a href="about-me.html">Contact Us</a></li>
-                                        <li><a href="team-member.html">Career</a></li>
+                                        <li><a href="/contact/">Contact Us</a></li>
+                                        <li><a onclick="career()">Career</a></li>
                                     </ul>
                                 </div>
                             </div><!-- .bringer-widget -->
@@ -513,9 +508,7 @@
                                 <h6>Resources</h6>
                                 <div class="bringer-menu-widget">
                                     <ul>
-                                        <li><a href="pricing.html">Client Area</a></li>
-                                        <li><a href="#">Terms of Use</a></li>
-                                        <li><a href="#">Privacy Policy</a></li>
+                                        <li><a onclick="clientarea()">Client Area</a></li>
                                     </ul>
                                 </div>
                             </div><!-- .bringer-widget -->
@@ -545,6 +538,15 @@
     <div class="bringer-backlight"></div>
 
     <!-- JS Scripts -->
+    <script>
+        function clientarea() {
+            alert('Under maintenance!');
+        }
+
+        function career() {
+            alert('Sorry, not yet available. We\'ll let you know when vacancies become available.');
+        }
+    </script>
     <script src="/js/lib/jquery.min.js"></script>
     <script src="/js/lib/libs.js"></script>
     <script src="/js/contact_form.js"></script>

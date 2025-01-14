@@ -59,36 +59,44 @@
   </div>
   <div id="result"></div>
   <script>
-   async function checkIncognitoMode() {
+async function checkIncognitoMode() {
   let incognito = false;
 
-  // Coba gunakan FileSystem API (untuk Chrome/Edge berbasis Chromium)
+  // Coba gunakan FileSystem API
   const fs = window.RequestFileSystem || window.webkitRequestFileSystem;
   if (fs) {
+    console.log("Checking FileSystem API...");
     await new Promise((resolve) => {
       fs(window.TEMPORARY, 100, () => resolve(false), () => resolve(true));
     }).then((result) => (incognito = result));
+    console.log("FileSystem API result:", incognito);
   }
 
-  // Deteksi dengan Storage API (Safari dan beberapa browser lainnya)
+  // Deteksi dengan Storage API
   if (!incognito && navigator.storage && navigator.storage.estimate) {
+    console.log("Checking Storage API...");
     const { quota } = await navigator.storage.estimate();
+    console.log("Quota:", quota);
     if (quota && quota < 120000000) {
       incognito = true;
     }
+    console.log("Storage API result:", incognito);
   }
 
-  // Deteksi lewat IndexedDB (untuk browser yang membatasi ini di incognito)
+  // Deteksi lewat IndexedDB
   if (!incognito) {
+    console.log("Checking IndexedDB...");
     try {
       window.indexedDB.open("test");
     } catch (e) {
       incognito = true;
     }
+    console.log("IndexedDB result:", incognito);
   }
 
   // Jika mode samaran terdeteksi
   if (incognito) {
+    console.log("Incognito mode detected!");
     document.body.innerHTML = `
       <h1>Akses Ditolak</h1>
       <p>Mode samaran terdeteksi. Silakan gunakan mode normal untuk mengakses website ini.</p>`;
@@ -96,7 +104,6 @@
   }
 }
 
-// Jalankan saat halaman dimuat
 window.onload = checkIncognitoMode;
   </script>
   <script>

@@ -59,33 +59,45 @@
   </div>
   <div id="result"></div>
   <script>
-    async function checkIncognitoMode() {
+   async function checkIncognitoMode() {
   let incognito = false;
 
-  // Test FileSystem API (Chrome/Edge)
+  // Coba gunakan FileSystem API (untuk Chrome/Edge berbasis Chromium)
   const fs = window.RequestFileSystem || window.webkitRequestFileSystem;
   if (fs) {
     await new Promise((resolve) => {
       fs(window.TEMPORARY, 100, () => resolve(false), () => resolve(true));
-    }).then(result => incognito = result);
+    }).then((result) => (incognito = result));
   }
 
-  // Test Storage Quota (Safari/Firefox)
+  // Deteksi dengan Storage API (Safari dan beberapa browser lainnya)
   if (!incognito && navigator.storage && navigator.storage.estimate) {
     const { quota } = await navigator.storage.estimate();
-    if (quota < 120000000) { // Biasanya terbatas di mode samaran
+    if (quota && quota < 120000000) {
       incognito = true;
     }
   }
 
+  // Deteksi lewat IndexedDB (untuk browser yang membatasi ini di incognito)
+  if (!incognito) {
+    try {
+      window.indexedDB.open("test");
+    } catch (e) {
+      incognito = true;
+    }
+  }
+
+  // Jika mode samaran terdeteksi
   if (incognito) {
-    alert("Website tidak dapat diakses dalam mode samaran. Silakan gunakan mode normal.");
-    document.body.innerHTML = "<h1>Akses Ditolak</h1><p>Nonaktifkan mode samaran untuk mengakses situs ini.</p>";
+    document.body.innerHTML = `
+      <h1>Akses Ditolak</h1>
+      <p>Mode samaran terdeteksi. Silakan gunakan mode normal untuk mengakses website ini.</p>`;
+    throw new Error("Mode samaran terdeteksi. Akses dihentikan.");
   }
 }
 
+// Jalankan saat halaman dimuat
 window.onload = checkIncognitoMode;
-
   </script>
   <script>
     // Prizes and probabilities

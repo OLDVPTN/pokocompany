@@ -105,7 +105,6 @@
     let scratchedArea = 0;
     const totalArea = canvas.width * canvas.height;
     const revealThreshold = 0.5; // 50% area harus tergosok
-    
 
     // Scratch logic
     function scratch(e) {
@@ -119,20 +118,28 @@
       ctx.beginPath();
       ctx.arc(x, y, 20, 0, Math.PI * 2);
       ctx.fill();
-      // Hitung area tergosok
+
+      // Calculate scratched area
       scratchedArea += Math.PI * Math.pow(20, 2);
 
-// Reveal prize jika area tergosok melebihi threshold
-if (scratchedArea / totalArea > revealThreshold) {
-    revealPrize();
-}
-function revealPrize() {
-            // Bersihkan sisa layer gosokan
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Reveal prize if scratched area exceeds threshold
+      if (scratchedArea / totalArea > revealThreshold) {
+        revealPrize();
+      }
+    }
 
-            // Tampilkan hadiah
-            prizeText.style.display = "block";
-        }
+    function revealPrize() {
+      // Clear remaining scratch layer
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Show prize
+      prizeDiv.style.visibility = "visible";
+
+      // Disable further scratching
+      canvas.style.pointerEvents = "none";
+
+      // Show result
+      document.getElementById("result").innerText = `You got: ${selectedPrize}`;
     }
 
     // Event listeners
@@ -142,29 +149,6 @@ function revealPrize() {
     canvas.addEventListener("touchstart", () => (isScratching = true));
     canvas.addEventListener("touchend", () => (isScratching = false));
     canvas.addEventListener("touchmove", scratch);
-
-    // Optional: Check if enough area is scratched
-    function isScratchedEnough() {
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      let transparentPixels = 0;
-
-      for (let i = 0; i < imageData.data.length; i += 4) {
-        if (imageData.data[i + 3] === 0) {
-          transparentPixels++;
-        }
-      }
-
-      const transparency = (transparentPixels / (canvas.width * canvas.height)) * 100;
-      return transparency > 50; // Trigger at 50% scratched
-    }
-
-    canvas.addEventListener("mouseup", () => {
-      if (isScratchedEnough()) {
-        prizeDiv.style.visibility = "visible"; // Tampilkan hadiah
-        canvas.style.pointerEvents = "none"; // Disable further scratching
-        document.getElementById("result").innerText = `You got: ${selectedPrize}`;
-      }
-    });
   </script>
 </body>
 </html>

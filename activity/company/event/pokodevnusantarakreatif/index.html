@@ -59,54 +59,17 @@
   </div>
   <div id="result"></div>
   <script>
-async function checkIncognitoMode() {
-  let incognito = false;
+    // Cek status di localStorage
+  const scratchCardKey = "isScratched";
+  const isAlreadyScratched = localStorage.getItem(scratchCardKey);
 
-  // Coba gunakan FileSystem API
-  const fs = window.RequestFileSystem || window.webkitRequestFileSystem;
-  if (fs) {
-    console.log("Checking FileSystem API...");
-    await new Promise((resolve) => {
-      fs(window.TEMPORARY, 100, () => resolve(false), () => resolve(true));
-    }).then((result) => (incognito = result));
-    console.log("FileSystem API result:", incognito);
-  }
-
-  // Deteksi dengan Storage API
-  if (!incognito && navigator.storage && navigator.storage.estimate) {
-    console.log("Checking Storage API...");
-    const { quota } = await navigator.storage.estimate();
-    console.log("Quota:", quota);
-    if (quota && quota < 120000000) {
-      incognito = true;
-    }
-    console.log("Storage API result:", incognito);
-  }
-
-  // Deteksi lewat IndexedDB
-  if (!incognito) {
-    console.log("Checking IndexedDB...");
-    try {
-      window.indexedDB.open("test");
-    } catch (e) {
-      incognito = true;
-    }
-    console.log("IndexedDB result:", incognito);
-  }
-
-  // Jika mode samaran terdeteksi
-  if (incognito) {
-    console.log("Incognito mode detected!");
+  if (isAlreadyScratched) {
     document.body.innerHTML = `
-      <h1>Akses Ditolak</h1>
-      <p>Mode samaran terdeteksi. Silakan gunakan mode normal untuk mengakses website ini.</p>`;
-    throw new Error("Mode samaran terdeteksi. Akses dihentikan.");
+      <h1>Kartu Sudah Digunakan</h1>
+      <p>Anda sudah menggosok kartu ini. Terima kasih telah bermain!</p>`;
+    throw new Error("Kartu sudah digunakan.");
   }
-}
 
-window.onload = checkIncognitoMode;
-  </script>
-  <script>
     // Prizes and probabilities
     const prizes = [
       { prize: "Zonk! Better luck next time!", probability: 89.5 },
@@ -187,7 +150,11 @@ window.onload = checkIncognitoMode;
 
       // Show result
       document.getElementById("result").innerText = `You got: ${selectedPrize}`;
+
+      // Simpan status ke localStorage
+    localStorage.setItem(scratchCardKey, true);
     }
+    
 
     // Event listeners
     canvas.addEventListener("mousedown", () => (isScratching = true));

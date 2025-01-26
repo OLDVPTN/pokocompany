@@ -403,7 +403,7 @@
       let container = button.parentElement;
       container.innerHTML = `
         <div style="width: 100%;">
-          <input type="text" class="wallet-input" placeholder="Masukkan nomor ${wallet}" maxlength="13" oninput="validateNumber(this)">
+          <input type="number" class="wallet-input" placeholder="Masukkan nomor ${wallet}" maxlength="13" oninput="validateNumber(this)">
           <div class="error-message">Nomor tidak valid. Masukkan minimal 10 digit angka.</div>
           <div class="wallet-buttons">
             <button class="cancel-btn" onclick="resetOptions(this)">

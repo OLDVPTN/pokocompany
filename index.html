@@ -26,19 +26,39 @@
   <p id="desc"></p>
 
   <script>
-    const lang = navigator.language || navigator.userLanguage;
+    const lang = (navigator.language || navigator.userLanguage).toLowerCase();
     const titleEl = document.getElementById('title');
     const descEl = document.getElementById('desc');
 
-    if (lang.startsWith('id')) {
-      // Bahasa Indonesia
-      titleEl.textContent = '🚧 Sedang Dalam Pemeliharaan 🚧';
-      descEl.textContent = 'Maaf, situs sedang dalam perbaikan. Silakan kembali nanti ya!';
-    } else {
-      // Default ke English
-      titleEl.textContent = '🚧 Maintenance Mode 🚧';
-      descEl.textContent = 'Sorry, the site is under maintenance. Please check back later!';
-    }
+    const messages = {
+      id: {
+        title: '🚧 Sedang Dalam Pemeliharaan 🚧',
+        desc: 'Maaf, situs sedang dalam perbaikan. Silakan kembali nanti ya!'
+      },
+      en: {
+        title: '🚧 Maintenance Mode 🚧',
+        desc: 'Sorry, the site is under maintenance. Please check back later!'
+      },
+      ja: {
+        title: '🚧 メンテナンス中 🚧',
+        desc: '申し訳ありませんが、現在サイトはメンテナンス中です。後ほど再度ご確認ください。'
+      },
+      fr: {
+        title: '🚧 Mode Maintenance 🚧',
+        desc: 'Désolé, le site est en maintenance. Veuillez revenir plus tard.'
+      },
+      es: {
+        title: '🚧 Modo de Mantenimiento 🚧',
+        desc: 'Lo sentimos, el sitio está en mantenimiento. ¡Vuelve más tarde!'
+      }
+    };
+
+    // Ambil 2 huruf pertama aja, misal "id-ID" jadi "id"
+    const shortLang = lang.slice(0, 2);
+    const content = messages[shortLang] || messages['en'];
+
+    titleEl.textContent = content.title;
+    descEl.textContent = content.desc;
   </script>
 </body>
 </html>

@@ -358,10 +358,8 @@
 				`,
 				showCancelButton: false,
 				confirmButtonText: 'Verifikasi',
-				showLoaderOnConfirm: true,
 				didOpen: () => {
 				  const confirmBtn = Swal.getConfirmButton();
-				  confirmBtn.disabled = true; // Disable tombol saat pertama kali muncul
 				},
 				preConfirm: () => {
 				  return new Promise((resolve, reject) => {

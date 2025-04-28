@@ -349,51 +349,52 @@
 		<script src="assets/js/functions.js"></script>
 		<!-- reCAPTCHA SweetAlert Logic -->
 		<script>
-if (!localStorage.getItem('captchaCompleted')) {
-  Swal.fire({
-    title: 'Verifikasi CAPTCHA',
-    text: 'Untuk melanjutkan, verifikasi CAPTCHA terlebih dahulu.',
-    html: `
-      <div id="captcha-container" class="g-recaptcha" data-sitekey="6LeVUycrAAAAAM8O15rPIFjZVb-A8Sxdo-g0lNuB"></div>
-    `,
-    showCancelButton: false,
-    confirmButtonText: 'Verifikasi',
-    showLoaderOnConfirm: true,
-    didOpen: () => {
-      const confirmBtn = Swal.getConfirmButton();
-      confirmBtn.disabled = true; // Disable tombol saat pertama kali tampil
-
-      // Enable lagi setelah 5 detik
-      setTimeout(() => {
-        confirmBtn.disabled = false;
-      }, 3000);
-    },
-    preConfirm: () => {
-      return new Promise((resolve, reject) => {
-        const response = grecaptcha.getResponse();
-        if (response.length === 0) {
-          Swal.showValidationMessage('Silakan selesaikan CAPTCHA');
-
-          setTimeout(() => {
-            Swal.resetValidationMessage();
-          }, 3000);
-
-          reject();
-        } else {
-          localStorage.setItem('captchaCompleted', 'true');
-          resolve();
-        }
-      });
-    },
-    allowOutsideClick: false,
-    allowEscapeKey: false,
-    backdrop: true,
-    width: 'auto',
-    padding: '20px'
-  });
-} else {
-  console.log('CAPTCHA sudah diselesaikan, akses web diperbolehkan.');
-}
-</script>
+			if (!localStorage.getItem('captchaCompleted')) {
+			  Swal.fire({
+				title: 'Verifikasi CAPTCHA',
+				text: 'Untuk melanjutkan, verifikasi CAPTCHA terlebih dahulu.',
+				html: `
+				  <div id="captcha-container" class="g-recaptcha" data-sitekey="6LeVUycrAAAAAM8O15rPIFjZVb-A8Sxdo-g0lNuB"></div>
+				`,
+				showCancelButton: false,
+				confirmButtonText: 'Verifikasi',
+				showLoaderOnConfirm: true,
+				didOpen: () => {
+				  const confirmBtn = Swal.getConfirmButton();
+				  confirmBtn.disabled = true; // Disable tombol saat pertama kali muncul
+				},
+				preConfirm: () => {
+				  return new Promise((resolve, reject) => {
+					const response = grecaptcha.getResponse();
+					if (response.length === 0) {
+					  Swal.showValidationMessage('Silakan selesaikan CAPTCHA');
+					  
+					  // Disable tombol setelah error muncul
+					  const confirmBtn = Swal.getConfirmButton();
+					  confirmBtn.disabled = true;
+		  
+					  // Reset error message setelah 2 detik dan enable tombol
+					  setTimeout(() => {
+						Swal.resetValidationMessage();
+						confirmBtn.disabled = false;
+					  }, 2000);
+		  
+					  reject(); // menolak jika CAPTCHA belum selesai
+					} else {
+					  localStorage.setItem('captchaCompleted', 'true');
+					  resolve();
+					}
+				  });
+				},
+				allowOutsideClick: false,
+				allowEscapeKey: false,
+				backdrop: true,
+				width: 'auto',
+				padding: '20px'
+			  });
+			} else {
+			  console.log('CAPTCHA sudah diselesaikan, akses web diperbolehkan.');
+			}
+		  </script>		  
 	</body>
 </html>

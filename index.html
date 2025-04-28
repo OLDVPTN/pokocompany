@@ -349,40 +349,43 @@
 		<script src="assets/js/functions.js"></script>
 		<!-- reCAPTCHA SweetAlert Logic -->
 		<script>
-			// Mengecek apakah reCAPTCHA sudah diselesaikan atau belum
 			if (!localStorage.getItem('captchaCompleted')) {
-				// Menampilkan SweetAlert dengan Google reCAPTCHA
-				Swal.fire({
-					title: 'Verifikasi CAPTCHA',
-					text: 'Untuk melanjutkan, verifikasi CAPTCHA terlebih dahulu.',
-					html: `
-						<div class="g-recaptcha" data-sitekey="6LeVUycrAAAAAM8O15rPIFjZVb-A8Sxdo-g0lNuB"></div>
-					`,
-					showCancelButton: false,
-					confirmButtonText: 'Verifikasi',
-					preConfirm: () => {
-						return new Promise((resolve, reject) => {
-							const response = grecaptcha.getResponse();
-							if (response.length === 0) {
-								Swal.showValidationMessage('Silakan selesaikan CAPTCHA');
-								reject();
-							} else {
-								// Jika CAPTCHA benar, set status selesai
-								localStorage.setItem('captchaCompleted', 'true');
-								resolve();
-							}
-						});
-					},
-					allowOutsideClick: false, // Mencegah klik di luar untuk menutup
-					allowEscapeKey: false,    // Mencegah escape key untuk menutup
-					backdrop: true,           // Mencegah interaksi dengan halaman selama CAPTCHA
-					width: 'auto', // Memastikan lebar popup otomatis menyesuaikan
-                    padding: '20px', // Menambah padding pada popup
-				});
+			  Swal.fire({
+				title: 'Verifikasi CAPTCHA',
+				text: 'Untuk melanjutkan, verifikasi CAPTCHA terlebih dahulu.',
+				html: `
+				  <div id="captcha-container" class="g-recaptcha" data-sitekey="6LeVUycrAAAAAM8O15rPIFjZVb-A8Sxdo-g0lNuB"></div>
+				`,
+				showCancelButton: false,
+				confirmButtonText: 'Verifikasi',
+				showLoaderOnConfirm: true,  // <-- ini bikin tombol ada loadingnya
+				preConfirm: () => {
+				  return new Promise((resolve, reject) => {
+					const response = grecaptcha.getResponse();
+					if (response.length === 0) {
+					  Swal.showValidationMessage('Silakan selesaikan CAPTCHA');
+		  
+					  // Hilangin pesan setelah 2 detik
+					  setTimeout(() => {
+						Swal.resetValidationMessage();
+					  }, 2000);
+		  
+					  reject();
+					} else {
+					  localStorage.setItem('captchaCompleted', 'true');
+					  resolve();
+					}
+				  });
+				},
+				allowOutsideClick: false,
+				allowEscapeKey: false,
+				backdrop: true,
+				width: 'auto',
+				padding: '20px'
+			  });
 			} else {
-				// Jika CAPTCHA sudah diselesaikan, izinkan akses ke web
-				console.log('CAPTCHA sudah diselesaikan, akses web diperbolehkan.');
+			  console.log('CAPTCHA sudah diselesaikan, akses web diperbolehkan.');
 			}
-		</script>
+		  </script>		  
 	</body>
 </html>
